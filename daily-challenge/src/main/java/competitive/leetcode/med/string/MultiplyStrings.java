@@ -1,5 +1,8 @@
 package competitive.leetcode.med.string;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class MultiplyStrings {
 
 	private String addStrings(String num1, String num2) {
@@ -17,7 +20,7 @@ public class MultiplyStrings {
 		return builder.reverse().toString();
 	}
 	
-    public String multiply(String num1, String num2) {
+    public String multiplySlow(String num1, String num2) {
     	if (num1.length() > num2.length()) {
     		String temp = num1;
     		num1 = num2;
@@ -47,7 +50,57 @@ public class MultiplyStrings {
     	return allMul;
     }
     
+    public String multiply(String p1, String p2) {
+    	String num1, num2;
+    	if (p1.length() > p2.length()) {
+    		String temp = p1;
+    		num1 = p2;
+    		num2 = temp;
+    	} else {
+    		num1 = p1;
+    		num2 = p2;
+    	}
+    	String[] multiplications = new String[num1.length()];
+    	Map<Character, String> cache = new HashMap<Character, String>();
+    	cache.put('0', "0");
+    	for (int n1=0; n1<num1.length(); n1++) {
+    		multiplications[n1]=
+				cache.computeIfAbsent(num1.charAt(num1.length()-1-n1), key -> {
+	        		int d1 = key - '0';
+	        		StringBuilder mul = new StringBuilder();
+	        		int carry = 0;
+	        		for (int n2=num2.length()-1; n2>=0; n2--) {
+	        			int d2 = num2.charAt(n2) - '0';
+	        			int m = d1 * d2 + carry;
+	        			carry = m / 10;
+	        			mul.append(m % 10);
+	        		}
+	        		if (carry != 0)
+	        			mul.append(carry);
+	        		return mul.toString();
+	        	});
+    	}
+    	
+		StringBuilder result = new StringBuilder();
+    	int maxDigits = multiplications[multiplications.length-1].length() + num1.length() - 1;
+    	int carry = 0;
+		for (int i=0; i<maxDigits; i++) {
+			int s = carry;
+			for (int j=0; j<multiplications.length; j++) {
+				int index = i-j;
+				s += index < 0 || index >= multiplications[j].length()  ? 0 : multiplications[j].charAt(index) - '0';
+			}
+			carry = s / 10;
+			result.append(s % 10);
+		}
+		if (carry != 0)
+			result.append(carry);
+		return result.reverse().toString();
+    }
+    
     public static void main(String[] args) {
+		System.out.println(new MultiplyStrings().multiply("999", "999"));
+		System.out.println(new MultiplyStrings().multiply("123", "11"));
 		System.out.println(new MultiplyStrings().multiply("123", "0"));
 		System.out.println(new MultiplyStrings().multiply("123", "101"));
 		System.out.println(new MultiplyStrings().multiply("123", "456"));
