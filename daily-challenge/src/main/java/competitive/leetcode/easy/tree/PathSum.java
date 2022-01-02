@@ -1,7 +1,5 @@
 package competitive.leetcode.easy.tree;
 
-import competitive.leetcode.easy.tree.LevelOrder.TreeNode;
-
 public class PathSum {
 
 	private static class TreeNode {
