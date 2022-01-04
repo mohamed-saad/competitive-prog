@@ -15,7 +15,7 @@ public class RemoveLinkedListElements {
 	    }
 	}
 	
-    public ListNode removeElements(ListNode head, int val) {
+    public ListNode removeElementsSlow(ListNode head, int val) {
         if (head == null) return head;
         ListNode newHead = head;
         while(newHead != null && newHead.val == val) {
@@ -34,5 +34,20 @@ public class RemoveLinkedListElements {
             itr = itr.next;
         }
         return newHead;
+    }
+    
+    public ListNode removeElements(ListNode head, int val) {
+        ListNode newHead = new ListNode(-1, head);
+        ListNode pre = newHead;
+        ListNode itr = head;
+        while(itr != null) {
+            if (itr.val == val) {
+                pre.next = itr.next; // delete
+            } else {
+                pre = itr; // move forward
+            }
+            itr = itr.next;
+        }
+        return newHead.next;
     }
 }
